@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware   # ← add this import
+from fastapi.middleware.cors import CORSMiddleware
 from neo4j import GraphDatabase
 import os
 from dotenv import load_dotenv
@@ -13,14 +13,10 @@ app = FastAPI()
 # ─── Add CORS middleware ───
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://ai-benchmark-frontend-three.vercel.app",   # ← your exact Vercel URL
-        "https://ai-benchmark-frontend-three.vercel.app/",  # with trailing slash (sometimes needed)
-        "*"                                                 # ← temporary wildcard for testing
-    ],
+    allow_origins=["https://ai-benchmark-frontend-three.vercel.app", "*"],
     allow_credentials=True,
-    allow_methods=["*"],     # GET, POST, OPTIONS, etc.
-    allow_headers=["*"],     # Content-Type, Authorization, etc.
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "*"],
 )
 
 class Driver:
@@ -107,7 +103,9 @@ def compare_benchmarks(user_id: str):
     else:
         return {"current": None, "previous": None}
 
-# Add more endpoints, e.g., for peer scores (similar to the Cypher example I gave earlier)
+@app.get("/")
+def root():
+    return {"status": "online", "message": "Backend running"}
 
 if __name__ == "__main__":
     import uvicorn
