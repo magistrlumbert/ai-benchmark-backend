@@ -14,13 +14,13 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",      # Vite dev server
-        "http://127.0.0.1:5173",      # sometimes needed
-        "*"                           # ← for testing: allow all (dangerous in prod!)
+        "https://ai-benchmark-frontend-three.vercel.app",   # ← your exact Vercel URL
+        "https://ai-benchmark-frontend-three.vercel.app/",  # with trailing slash (sometimes needed)
+        "*"                                                 # ← temporary wildcard for testing
     ],
     allow_credentials=True,
-    allow_methods=["*"],              # allow GET, POST, OPTIONS, etc.
-    allow_headers=["*"],              # allow Content-Type, Authorization, etc.
+    allow_methods=["*"],     # GET, POST, OPTIONS, etc.
+    allow_headers=["*"],     # Content-Type, Authorization, etc.
 )
 
 class Driver:
@@ -58,17 +58,6 @@ def get_heatmap(profile: Profile):
 
     params = profile.dict()
     
-    # ────────────────────────────────────────────────
-    # Print exactly what is going to Neo4j
-    print("═" * 60)
-    print("SENDING CYPHER TO NEO4J:")
-    print(query.strip())
-    print("\nPARAMETERS:")
-    import json
-    print(json.dumps(params, indent=2))
-    print("═" * 60)
-    # ────────────────────────────────────────────────
-
     results = driver.execute_query(query, parameters=profile.dict())
     if not results:
         raise HTTPException(status_code=404, detail="No data found")
