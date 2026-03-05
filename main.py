@@ -107,6 +107,10 @@ def compare_benchmarks(user_id: str):
 def root():
     return {"status": "online", "message": "Backend running"}
 
+@app.options("/heatmap")
+async def options_heatmap():
+    return Response(status_code=204)
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
